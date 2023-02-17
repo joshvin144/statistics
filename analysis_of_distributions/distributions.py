@@ -4,6 +4,8 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+NUM_INTENSITY_VALUES = 256
+
 # Define parent class, here
 class Distribution(object):
 	''' Parent class '''
@@ -14,10 +16,10 @@ class Distribution(object):
 		self.sample_size = None
 		self.samples = None
 
-	def plot(self):
+	def plot(self, num_bins = NUM_INTENSITY_VALUES):
 		if (np.ndarray != type(self.samples)):
 			sys.exit("Distribution not initialized")
-		sns.histplot(data = self.samples)
+		sns.histplot(data = self.samples, bins = num_bins)
 		plt.show()
 
 	def __add__(self, other):
