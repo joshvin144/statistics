@@ -59,9 +59,10 @@ class Binomial_Distribution(Distribution):
 		self.samples = np.random.binomial(num_trials, probability_of_success_on_each_trial, num_experiments)
 		# Each index represents the number of successful trials out of the total number of trials from 0 to the number of trials
 		# Each value represents the number of experiments where said number of successful trials were observed
+		# The maximum number of successful trials is the number of Bernoulli trials
 		
 		self.horizontal_axis = np.arange(num_trials)
-		self.pmf = self.samples/(np.sum(self.samples))
+		self.pmf = self.samples/(np.sum(self.samples)) # The probability is the number of successful trials divided by the total number of successes
 		self.cdf = np.cumsum(self.pmf)
 
 	def __repr__(self):
