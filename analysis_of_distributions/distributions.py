@@ -4,6 +4,9 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+# Debugging
+from icecream import ic
+
 NUM_INTENSITY_VALUES = 256
 
 # Define parent class, here
@@ -13,13 +16,26 @@ class Distribution(object):
 		self.mean = None
 		self.standard_deviation = None
 		self.equation = None
+
 		self.sample_size = None
 		self.samples = None
+
+		self.horizontal_axis = None
+		self.pmf = None
+		self.cdf = None
 
 	def plot(self, num_bins = NUM_INTENSITY_VALUES):
 		if (np.ndarray != type(self.samples)):
 			sys.exit("Distribution not initialized")
 		sns.histplot(data = self.samples, bins = num_bins)
+		plt.show()
+
+	def dotplot(self):
+		if (np.ndarray != type(self.pmf)):
+			sys.exit("PMF not initialized")
+		fig, axs = plt.subplots(1, 2)
+		axs[0].plot(self.horizontal_axis, self.pmf, 'bo')
+		axs[1].plot(self.horizontal_axis, self.cdf, 'bo')
 		plt.show()
 
 	def __add__(self, other):
@@ -31,8 +47,28 @@ class Distribution(object):
 	def __repr__(self):
 		return "Distribution"
 
-# Define children classes, here
+#### Define children classes, here ####
 # Children classes inherit from Distribution
+
+#### Discrete Distributions ####
+
+class Binomial_Distribution(Distribution):
+	def __init__(self, num_trials = 1, probability_of_success_on_each_trial = 0.5, num_experiments = 1000):
+		super(Binomial_Distribution, self).__init__()
+		self.sample_size = num_experiments
+		self.samples = np.random.binomial(num_trials, probability_of_success_on_each_trial, num_experiments)
+		# Each index represents the number of successful trials out of the total number of trials from 0 to the number of trials
+		# Each value represents the number of experiments where said number of successful trials were observed
+		
+		self.horizontal_axis = np.arange(num_trials)
+		self.pmf = self.samples/(np.sum(self.samples))
+		self.cdf = np.cumsum(self.pmf)
+
+	def __repr__(self):
+		return "Binomial Distribution"
+
+#### Continuous Distributions ####
+
 class Normal_Distribution(Distribution):
 	def __init__(self, mean = 0, standard_deviation = 1, sample_size = 1000):
 		super(Normal_Distribution, self).__init__()

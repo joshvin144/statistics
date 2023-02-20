@@ -45,7 +45,7 @@ class Normality_Test(object):
 	def __repr__(self):
 		return "Normality_Test"
 
-#### Statistical test that are not compatible with the tester, yet ####
+#### Statistical tests that are not compatible with the tester, yet ####
 
 # Define a statistical test class
 class T_Test(object):
