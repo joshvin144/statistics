@@ -34,8 +34,9 @@ class Distribution(object):
 		if (np.ndarray != type(self.pmf)):
 			sys.exit("PMF not initialized")
 		fig, axs = plt.subplots(1, 2)
-		axs[0].plot(self.hist, self.pmf, 'bo')
-		axs[1].plot(self.hist, self.cdf, 'bo')
+		horizontal_axis = np.arange(self.pmf.shape[0])
+		axs[0].plot(horizontal_axis, self.pmf, 'bo')
+		axs[1].plot(horizontal_axis, self.cdf, 'bo')
 		plt.show()
 
 	def __add__(self, other):
@@ -61,7 +62,7 @@ class Binomial_Distribution(Distribution):
 		# Each value represents the number of experiments where said number of successful trials were observed
 		# The maximum number of successful trials is the number of Bernoulli trials
 		
-		sorted_samples = np.sort(samples)
+		sorted_samples = np.sort(self.samples)
 		hist = np.zeros(num_trials)
 		for experiment in range(num_experiments):
 			hist[int(sorted_samples[experiment])] += 1
