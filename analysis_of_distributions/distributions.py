@@ -24,7 +24,7 @@ class Distribution(object):
 		self.pmf = None
 		self.cdf = None
 
-	def histplot(self, num_bins = 0):
+	def histplot(self, num_bins = 1):
 		if (np.ndarray != type(self.samples)):
 			sys.exit("Distribution not initialized")
 		sns.histplot(data = self.samples, bins = num_bins)
@@ -103,4 +103,28 @@ class Uniform_Distribution(Distribution):
 
 		def __repr__(self):
 			return "Uniform Distribution"
+
+#### Outlier Detection ####
+
+# IQR method
+def detect_outliers_IQR(samples):
+	num_samples = samples.shape[0]
+	# Sort in ascending order
+	sorted_samples = np.sort(samples)
+	# Mask for the samples
+	mask = np.ones(num_samples, dtype = bool)
+
+	one_quarter_idx = int(num_samples/4)
+	three_quarters_idx = int(num_samples*3/4)
+	one_quarter_value = samples[one_quarter_idx]
+	three_quarters_value = samples[three_quarters_idx]
+	iqr = three_quarters_value - one_quarter_value
+	lower_whisker = one_quarter_value - (1.5*iqr)
+	upper_whisker = three_quarters_value + (1.5*iqr)
+
+	# Set the mask
+	mask = np.greater(samples, lower_whisker)
+	mask = np.logical_and(mask, np.less(samples, upper_whisker))
+
+	return mask
 

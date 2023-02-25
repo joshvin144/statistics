@@ -3,15 +3,19 @@ import argparse
 from distributions import Binomial_Distribution
 from distributions import Normal_Distribution
 from distributions import Uniform_Distribution
+from distributions import detect_outliers_IQR
 from statistical_tests import Tester
 from statistical_tests import Normality_Test
 from statistical_tests import T_Test
 from unpaired_versus_paired_t_test import Independent_T_Test
 from unpaired_versus_paired_t_test import Dependent_T_Test
 
+# Debugging
+from icecream import ic
+
 # For Binomial test
 # There are 30 trials in each experiment
-NUM_TRIALS = 30
+NUM_TRIALS = 10
 PROBABILITY_OF_SUCCESS_ON_EACH_TRIAL = 0.1
 NUM_EXPERIMENTS = 30
 
@@ -56,11 +60,15 @@ def main():
 	# is_significant_difference = dep_t_test.run(sample_distribution_1, sample_distribution_2)
 	# print("There is evidence to suggest that there is a significant difference between the two distributions if the test results are True.\nTest results: {:b}\n".format(is_significant_difference))
 
+
+	# Test for outliers
+	mask = detect_outliers_IQR(sample_distribution_1.samples)
+	ic(mask)
+
 	if (args.plot):
 		sample_distribution_1.histplot(NUM_TRIALS)
-		sample_distribution_2.histplot(NUM_TRIALS)
 		sample_distribution_1.dotplot()
-		sample_distribution_2.dotplot()
+		sample_distribution_1.boxplot()
 		# t_test.plot(sample_distribution_1, sample_distribution_2)
 
 	return 0
