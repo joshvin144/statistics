@@ -20,11 +20,11 @@ class Distribution(object):
 		self.sample_size = None
 		self.samples = None
 
-		self.horizontal_axis = None
+		self.hist = None
 		self.pmf = None
 		self.cdf = None
 
-	def plot(self, num_bins = NUM_INTENSITY_VALUES):
+	def histplot(self, num_bins = 0):
 		if (np.ndarray != type(self.samples)):
 			sys.exit("Distribution not initialized")
 		sns.histplot(data = self.samples, bins = num_bins)
@@ -34,8 +34,8 @@ class Distribution(object):
 		if (np.ndarray != type(self.pmf)):
 			sys.exit("PMF not initialized")
 		fig, axs = plt.subplots(1, 2)
-		axs[0].plot(self.horizontal_axis, self.pmf, 'bo')
-		axs[1].plot(self.horizontal_axis, self.cdf, 'bo')
+		axs[0].plot(self.hist, self.pmf, 'bo')
+		axs[1].plot(self.hist, self.cdf, 'bo')
 		plt.show()
 
 	def __add__(self, other):
@@ -61,8 +61,11 @@ class Binomial_Distribution(Distribution):
 		# Each value represents the number of experiments where said number of successful trials were observed
 		# The maximum number of successful trials is the number of Bernoulli trials
 		
-		self.horizontal_axis = np.arange(num_trials)
-		self.pmf = self.samples/(np.sum(self.samples)) # The probability is the number of successful trials divided by the total number of successes
+		sorted_samples = np.sort(samples)
+		hist = np.zeros(num_trials)
+		for experiment in range(num_experiments):
+			hist[int(sorted_samples[experiment])] += 1
+		self.pmf = sorted_samples/(np.sum(sorted_samples)) # The probability is the number of successful trials divided by the total number of successes
 		self.cdf = np.cumsum(self.pmf)
 
 	def __repr__(self):

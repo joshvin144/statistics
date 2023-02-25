@@ -57,8 +57,8 @@ def main():
 	# print("There is evidence to suggest that there is a significant difference between the two distributions if the test results are True.\nTest results: {:b}\n".format(is_significant_difference))
 
 	if (args.plot):
-		sample_distribution_1.plot(NUM_TRIALS)
-		sample_distribution_2.plot(NUM_TRIALS)
+		sample_distribution_1.histplot(NUM_TRIALS)
+		sample_distribution_2.histplot(NUM_TRIALS)
 		sample_distribution_1.dotplot()
 		sample_distribution_2.dotplot()
 		# t_test.plot(sample_distribution_1, sample_distribution_2)
