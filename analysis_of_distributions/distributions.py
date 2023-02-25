@@ -33,10 +33,16 @@ class Distribution(object):
 	def dotplot(self):
 		if (np.ndarray != type(self.pmf)):
 			sys.exit("PMF not initialized")
-		fig, axs = plt.subplots(1, 2)
 		horizontal_axis = np.arange(self.pmf.shape[0])
+		fig, axs = plt.subplots(1, 2)
 		axs[0].plot(horizontal_axis, self.pmf, 'bo')
 		axs[1].plot(horizontal_axis, self.cdf, 'bo')
+		plt.show()
+
+	def boxplot(self):
+		if (np.ndarray != type(self.samples)):
+			sys.exit("Distribution not initialized")
+		sns.boxplot(self.samples)
 		plt.show()
 
 	def __add__(self, other):
