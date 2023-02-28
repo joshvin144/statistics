@@ -1,5 +1,6 @@
 # Import all modules required to execute this section of code, here
 import argparse
+import numpy as np
 from distributions import Binomial_Distribution
 from distributions import Normal_Distribution
 from distributions import Uniform_Distribution

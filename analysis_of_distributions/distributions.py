@@ -116,13 +116,14 @@ def detect_outliers_IQR(samples):
 
 	one_quarter_idx = int(num_samples/4)
 	three_quarters_idx = int(num_samples*3/4)
-	one_quarter_value = samples[one_quarter_idx]
-	three_quarters_value = samples[three_quarters_idx]
+	one_quarter_value = sorted_samples[one_quarter_idx]
+	three_quarters_value = sorted_samples[three_quarters_idx]
 	iqr = three_quarters_value - one_quarter_value
 	lower_whisker = one_quarter_value - (1.5*iqr)
 	upper_whisker = three_quarters_value + (1.5*iqr)
 
 	# Set the mask
+	ic(lower_whisker, upper_whisker)
 	mask = np.greater(samples, lower_whisker)
 	mask = np.logical_and(mask, np.less(samples, upper_whisker))
 
