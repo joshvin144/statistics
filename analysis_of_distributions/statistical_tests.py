@@ -127,7 +127,7 @@ class ANOVA(object):
         # Sample from the f-distribution
         dfn = number_of_groups
         dfd = num_samples_processed - number_of_groups
-        p_val = f.cdf(f_stat, dfn, dfd)
+        p_val = 1 - f.cdf(f_stat, dfn, dfd)
 
         if (SIGNIFICANCE_LEVEL >= p_val):
             is_significant_difference = True
