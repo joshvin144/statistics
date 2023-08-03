@@ -13,15 +13,13 @@ NUM_INTENSITY_VALUES = 256
 class Distribution(object):
     ''' Parent class '''
     def __init__(self):
-        self.mean = None
-        self.standard_deviation = None
-        self.equation = None
+        self.location_parameter = None
+        self.shape_parameter = None
 
         self.sample_size = None
         self.samples = None
         self.group = None
 
-        self.hist = None
         self.pmf = None
         self.cdf = None
 
@@ -46,11 +44,13 @@ class Distribution(object):
         sns.boxplot(self.samples)
         plt.show()
 
+    # Serves as a method to concatenate the datasets
     def __add__(self, other):
-        return self.samples + other.samples
-
-    def __sub__(self, other):
-        return self.samples - other.samples
+        concatenation = Distribution()
+        concatenation.sample_size = self.sample_size + other.sample_size
+        concatenation.samples = np.concatenate((self.samples, other.samples))
+        concatenation.group = np.concatenate((self.group, other.group))
+        return concatenation
 
     def __repr__(self):
         return "Distribution"
@@ -86,11 +86,10 @@ class Normal_Distribution(Distribution):
         super(Normal_Distribution, self).__init__()
 
         # Set instance variables, here
-        self.mean = mean
-        self.standard_deviation = standard_deviation
-        self.equation = lambda x : 1/(self.standard_deviation * np.sqrt(2 * np.pi)) * np.exp( - (x - self.mean)**2 / (2 * self.standard_deviation**2))
+        self.location_parameter = mean
+        self.shape_parameter = standard_deviation
         self.sample_size = sample_size
-        self.samples = np.random.normal(self.mean, self.standard_deviation, self.sample_size)
+        self.samples = np.random.normal(self.location_parameter, self.shape_parameter, self.sample_size)
         self.group = np.ones(self.sample_size)
         self.group *= group_number
 

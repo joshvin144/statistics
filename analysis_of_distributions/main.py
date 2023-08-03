@@ -15,12 +15,6 @@ from statistical_tests import ANOVA
 # Debugging
 from icecream import ic
 
-# For Binomial test
-# There are 30 trials in each experiment
-NUM_TRIALS = 10
-PROBABILITY_OF_SUCCESS_ON_EACH_TRIAL = 0.1
-NUM_EXPERIMENTS = 30
-
 # Add command line arguments, here
 def create_argument_parser():
     argument_parser = argparse.ArgumentParser()
@@ -34,12 +28,10 @@ def main():
 
     # Create two sample distributions to compare
     sample_distribution_1 = Normal_Distribution(0,1, group_number = 1)
-    sample_distribution_2 = Normal_Distribution(5,1, group_number = 2)
+    sample_distribution_2 = Normal_Distribution(2,1, group_number = 2)
     
     # Concatenate the distributions
-    sample_distribution_concatenated = sample_distribution_1
-    sample_distribution_concatenated.samples = np.concatenate((sample_distribution_1.samples, sample_distribution_2.samples))
-    sample_distribution_concatenated.group = np.concatenate((sample_distribution_1.group, sample_distribution_2.group))
+    sample_distribution_concatenated = sample_distribution_1 + sample_distribution_2
 
     # Initialize the tester function
     normality_test = Normality_Test()
@@ -55,22 +47,13 @@ def main():
     # is_significant_difference = t_test.run(sample_distribution_1, sample_distribution_2)
     # print("There is evidence to suggest that there is a significant difference between the two distributions if the test results are True.\nTest results: {:b}\n".format(is_significant_difference))
 
-    # Initialize custom Independent T-Test
-    # ind_t_test = Independent_T_Test()
-    # is_significant_difference = ind_t_test.run(sample_distribution_1, sample_distribution_2)
-    # print("There is evidence to suggest that there is a significant difference between the two distributions if the test results are True.\nTest results: {:b}\n".format(is_significant_difference))
-
-    # Initialize custom Dependent T-Test
-    # dep_t_test = Dependent_T_Test()
-    # is_significant_difference = dep_t_test.run(sample_distribution_1, sample_distribution_2)
-    # print("There is evidence to suggest that there is a significant difference between the two distributions if the test results are True.\nTest results: {:b}\n".format(is_significant_difference))
-
-    # Test for outliers
-    # mask = detect_outliers_IQR(sample_distribution_1.samples)
-
     # Initialize and run an ANOVA
     anova_test = ANOVA()
-    is_significant_difference = anova_test.run(sample_distribution_concatenated)
+    # Initialize the tester
+    tester = Tester(anova_test)
+
+    # Run the tester
+    is_significant_difference = tester.run(sample_distribution_concatenated)
     print("There is evidence to suggest that the groups are not significantly different if the results are False.\nTest results:\t{:b}\n".format(is_significant_difference))
 
     if (args.plot):
@@ -81,3 +64,4 @@ def main():
 # There should be no need to touch this
 if (__name__ == "__main__"):
     _ = main()
+

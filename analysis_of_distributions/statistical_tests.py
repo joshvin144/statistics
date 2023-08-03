@@ -76,47 +76,58 @@ class T_Test(object):
     def __repr__(self):
         return "T_Test"
 
-# Analisys of Variance (ANOVA) class
+# Analisys of Variance (ANOVA) Class
 class ANOVA(object):
     def __init__(self):
         pass
 
+    # Concatenate distributions that you want to compare
     def run(self, distribution):
         is_significant_difference = False
+        p_val = 0
 
-        # Custom ANOVA
-        num_samples = distribution.samples.shape[0]
-        num_groups = int(np.amax(distribution.group))
-        mean_within_group = np.zeros(num_groups)
-        var_within_group = np.zeros(num_groups)
-        std_within_group = np.zeros(num_groups)
-        num_samples_within_group = np.zeros(num_groups)
-        degrees_of_freedom_within_group = np.zeros(num_groups)
-        sum_of_squares_within_group = np.zeros(num_groups)
-        mean_between_groups = np.mean(distribution.samples)
-        degrees_of_freedom_between = 0
-        sum_of_squares_between = 0
+        # Calculate the Grand Mean
+        grand_mean = np.mean(distribution.samples)
+        ic(grand_mean)
+        
+        # Extract the number of groups
+        number_of_groups = np.max(distribution.group)
+        number_of_groups = int(number_of_groups)
+        
+        # Calculate the group mean for each group
+        group_mean = np.zeros(number_of_groups)
+        for group_idx in range(number_of_groups):
+            group_mean[group_idx] += np.mean(distribution.samples[np.equal(group_idx + 1, distribution.group)])
+        ic(group_mean)
+        
+        # Calculate the Sum of Squares Between Groups
+        ssbetween = 0.0
+        for group_idx in range(number_of_groups):
+            ssbetween += np.sum(np.power((group_mean[group_idx] - grand_mean), 2))
+        
+        # Calculate the Sum of Squares Within Groups
+        sswithin_group = np.zeros(number_of_groups)
+        num_samples_in_group = np.zeros(number_of_groups, dtype = np.int)
+        num_samples_processed = 0
+        for group_idx in range(number_of_groups):
+            num_samples_in_group[group_idx] = np.sum(np.equal(group_idx + 1, distribution.group))
+            for sample_idx in range(num_samples_in_group[group_idx]):
+                sswithin_group[group_idx] += np.power((distribution.samples[num_samples_processed + sample_idx] - group_mean[group_idx]), 2)
+            num_samples_processed += num_samples_in_group[group_idx]
+        ic(sswithin_group)
+        ic(num_samples_in_group)
 
-        for i in range(num_groups):
-            mean_within_group[i] = np.mean(distribution.samples[np.equal(i + 1, distribution.group)])
-            var_within_group[i] = np.var(distribution.samples[np.equal(i + 1, distribution.group)])
-            std_within_group[i] = np.sqrt(var_within_group[i])
-            num_samples_within_group[i] = np.sum(np.equal(i + 1, distribution.group))
-            degrees_of_freedom_within_group[i] = num_samples_within_group[i] - 1
-            sum_of_squares_within_group[i] = var_within_group[i]*degrees_of_freedom_within_group[i]
-            sum_of_squares_between += num_samples_within_group[i]*np.power((mean_within_group[i] - mean_between_groups), 2)
+        # Calculate the Total Sum of Squares Within Groups
+        sswithin = np.sum(sswithin_group)
 
-        degrees_of_freedom_between = np.sum(degrees_of_freedom_within_group)
-        sum_of_squares_within = np.sum(sum_of_squares_within_group)
-        f_stat = sum_of_squares_between/sum_of_squares_within
-        p_val = 1 - f.cdf(f_stat, num_groups, degrees_of_freedom_between)
-        ic(f_stat, p_val)
+        # Calculate ratio of SSBetween to SSWithin
+        f_stat = ssbetween/sswithin
+        ic(f_stat)
 
-        # ANOVA from Scipy
-        group_1 = distribution.samples[np.equal(1, distribution.group)]
-        group_2 = distribution.samples[np.equal(2, distribution.group)]
-        stat, pvalue = f_oneway(group_1, group_2)
-        ic(stat, pvalue)
+        # Sample from the f-distribution
+        dfn = number_of_groups
+        dfd = num_samples_processed - number_of_groups
+        p_val = f.cdf(f_stat, dfn, dfd)
 
         if (SIGNIFICANCE_LEVEL >= p_val):
             is_significant_difference = True
