@@ -27,8 +27,8 @@ def main():
     args = argument_parser.parse_args()
 
     # Create two sample distributions to compare
-    sample_distribution_1 = Normal_Distribution(0,1, group_number = 1)
-    sample_distribution_2 = Normal_Distribution(2,1, group_number = 2)
+    sample_distribution_1 = Normal_Distribution(5,1, group_number = 1)
+    sample_distribution_2 = Normal_Distribution(8,1, group_number = 2)
     
     # Concatenate the distributions
     sample_distribution_concatenated = sample_distribution_1 + sample_distribution_2
@@ -39,7 +39,7 @@ def main():
     tester = Tester(normality_test)
 
     # Run the tester
-    is_normal = tester.run(sample_distribution_1)
+    is_normal = tester.run(sample_distribution_concatenated)
     print("There is evidence to suggest that the distribution is normal if the test results are False.\nThere is evidence to suggest that the distribution is not normal if the test results are True.\nTest results:\t{:b}\n".format(is_normal))
 
     # Initialize and run a T-Test

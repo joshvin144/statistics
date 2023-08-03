@@ -104,6 +104,7 @@ class ANOVA(object):
         ssbetween = 0.0
         for group_idx in range(number_of_groups):
             ssbetween += np.sum(np.power((group_mean[group_idx] - grand_mean), 2))
+        ic(ssbetween)
         
         # Calculate the Sum of Squares Within Groups
         sswithin_group = np.zeros(number_of_groups)
@@ -120,14 +121,26 @@ class ANOVA(object):
         # Calculate the Total Sum of Squares Within Groups
         sswithin = np.sum(sswithin_group)
 
-        # Calculate ratio of SSBetween to SSWithin
-        f_stat = ssbetween/sswithin
+        # Determine degrees of freedom
+        dfn = number_of_groups - 1
+        dfd = num_samples_processed - number_of_groups
+        ic(dfn)
+        ic(dfd)
+
+        # Calculate MSBetween to MSWithin
+        msbetween = ssbetween/dfn
+        mswithin = sswithin/dfd
+        ic(msbetween)
+        ic(mswithin)
+
+        # Calculate the F-Statistic
+        f_stat = msbetween/mswithin
         ic(f_stat)
 
         # Sample from the f-distribution
-        dfn = number_of_groups
-        dfd = num_samples_processed - number_of_groups
+        
         p_val = 1 - f.cdf(f_stat, dfn, dfd)
+        ic(p_val)
 
         if (SIGNIFICANCE_LEVEL >= p_val):
             is_significant_difference = True
