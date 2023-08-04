@@ -134,13 +134,18 @@ class ANOVA(object):
         ic(mswithin)
 
         # Calculate the F-Statistic
+        # In an ANOVA, the f_stat is the explained variance
         f_stat = msbetween/mswithin
         ic(f_stat)
 
         # Sample from the f-distribution
-        
         p_val = 1 - f.cdf(f_stat, dfn, dfd)
         ic(p_val)
+
+        # SSB is the know error because it is explained by the treatment factor
+        # SSW is the unknown error because it is unexplained variance within each group
+        # SST = SSB + SSW
+        # Recall that grouping into treatement factors is a form of linear regression, just with discrete variables
 
         if (SIGNIFICANCE_LEVEL >= p_val):
             is_significant_difference = True
